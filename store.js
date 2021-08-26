@@ -4,26 +4,48 @@ const bcrypt = require('bcrypt')
 const cors = require('cors')
 const users = require('./users')
 const app = express()
-
 const port = 8080
+
+const saltRounds = 10;
 
 app.use(cors());
 
+app.use(express.json())
 app.get('/', (req,res) => {
     res.send('Hello Worldo')
 })
 
-app.post('/login', (req,res) => {
-    const userName = req.headers.authorization.split(';')[0]
-    const password = req.headers.authorization.split(';')[1]
-    Users.findIndex(row => row.userName == userName && row.password == password) != -1 ? res.send("LoggedIn") : res.send("User Not Found") 
+app.post('/login', async (req,res) => {
+    console.log(users)
+    const userName = req.body.userName
+    const password = req.body.password
+    const currentUser = await users.find(row => row.userName == userName)
+    console.log(currentUser)
+    if(currentUser == null)
+    {
+        res.send("User not found")
+        return
+    }
+    const hash = await users.find((row) => row.userName == userName).password
+    console.log(password)
+    console.log(hash)
+        bcrypt.compare(password,hash).then(result => {
+            result == true? res.send("LoggedIn") : res.send("Wrong Password") 
+        })
+    // Users.findIndex(row => row.userName == userName && row.password == password) != -1 ? 
 })
 
 
 app.post('/signUp', (req,res) => {
-    const email = req.headers.authorization.split(';')[0]
-    const userName = req.headers.authorization.split(';')[1]
-    const password = req.headers.authorization.split(';')[2]
+    bcrypt.hash(req.body.password,saltRounds).then((newPass) => {
+        req.body.password = newPass
+    })
+    .then(() => {
+        users.push(req.body)
+    })
+    .catch(err => {
+        console.log(err)
+    })
 })
 
 
