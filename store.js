@@ -42,6 +42,7 @@ app.post('/signUp', (req,res) => {
     })
     .then(() => {
         users.push(req.body)
+        res.sendStatus(200);
     })
     .catch(err => {
         console.log(err)
