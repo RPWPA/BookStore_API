@@ -16,23 +16,21 @@ app.get('/', (req,res) => {
 })
 
 app.post('/login', async (req,res) => {
-    console.log(users)
     const userName = req.body.userName
     const password = req.body.password
     const currentUser = await users.find(row => row.userName == userName)
     console.log(currentUser)
     if(currentUser == null)
     {
-        res.send("User not found")
+        res.send("User not found").sendStatus(404)
         return
     }
     const hash = await users.find((row) => row.userName == userName).password
     console.log(password)
     console.log(hash)
         bcrypt.compare(password,hash).then(result => {
-            result == true? res.send("LoggedIn") : res.send("Wrong Password") 
+            result == true? res.send("LoggedIn").sendStatus(200) : res.send("Wrong Password").sendStatus(406) 
         })
-    // Users.findIndex(row => row.userName == userName && row.password == password) != -1 ? 
 })
 
 
@@ -46,6 +44,7 @@ app.post('/signUp', (req,res) => {
     })
     .catch(err => {
         console.log(err)
+        res.sendStatus(406)
     })
 })
 
