@@ -42,9 +42,12 @@ app.post('/signUp', (req,res) => {
     })
     .then(() => {
         users.push(req.body)
+        console.log(users)
+        res.send("Loggedin")
     })
     .catch(err => {
         console.log(err)
+        res.send(err)
     })
 })
 
