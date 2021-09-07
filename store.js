@@ -6,6 +6,8 @@ const users = require('./users')
 const app = express()
 const port = 8080
 
+const books = require('./books')
+
 const saltRounds = 10;
 
 app.use(cors());
@@ -43,6 +45,10 @@ app.post('/signUp', (req,res) => {
         console.log(err)
         res.sendStatus(406)
     })
+})
+
+app.get('/allBooks', (req,res) => {
+    res.json(books)
 })
 
 
