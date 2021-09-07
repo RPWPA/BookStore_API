@@ -19,17 +19,14 @@ app.post('/login', async (req,res) => {
     const userName = req.body.userName
     const password = req.body.password
     const currentUser = await users.find(row => row.userName == userName)
-    console.log(currentUser)
     if(currentUser == null)
     {
-        res.send("User not found").sendStatus(404)
+        res.statusCode(404).send("User not found")
         return
     }
     const hash = await users.find((row) => row.userName == userName).password
-    console.log(password)
-    console.log(hash)
         bcrypt.compare(password,hash).then(result => {
-            result == true? res.send("LoggedIn").sendStatus(200) : res.send("Wrong Password").sendStatus(406) 
+            result == true? res.status(200).send("Found User") : res.status(406).send("Wrong Password")
         })
 })
 
