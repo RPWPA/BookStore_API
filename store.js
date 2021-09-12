@@ -13,9 +13,9 @@ const saltRounds = 10;
 app.use(cors());
 
 app.use(express.json())
-app.get('/', (req,res) => {
-    res.send('Hello Worldo')
-})
+
+
+app.get('/', )
 
 app.post('/login', async (req,res) => {
     const userName = req.body.userName
@@ -55,3 +55,5 @@ app.get('/allBooks', (req,res) => {
 app.listen(port, () => {
     console.log(`Listening on port ${port}`)
 })
+
+module.exports = app
