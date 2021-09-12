@@ -16,7 +16,7 @@ mongoose.Schema = {
         },
         favoriteBooks:[{
             bookId:{
-                type:Number,
+                type: mongoose.Types.ObjectId,
                 required: false,
             }
         }]

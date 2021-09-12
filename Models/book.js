@@ -10,7 +10,7 @@ mongoose.Schema = {
         },
         author:{
             authorId: {
-                type: Number, 
+                type: mongoose.Types.ObjectId, 
                 required: true
             }
         }
