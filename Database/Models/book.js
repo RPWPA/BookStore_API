@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-mongoose.Schema = {
+const BookSchema = mongoose.Schema = {
     books:{
         name:{
             type: String,
@@ -16,6 +16,13 @@ mongoose.Schema = {
                 type: mongoose.Types.ObjectId, 
                 required: true
             }
+        },
+        price: {
+            type:Number,
+            required: true
         }
     }
 }
+
+const book  = mongoose.model('Books',BookSchema);
+module.exports = {book};

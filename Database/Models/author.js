@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-mongoose.Schema = {
+const AuthorSchema = mongoose.Schema = {
     author = {
         name:{
             type:String,
@@ -13,3 +13,6 @@ mongoose.Schema = {
         }
     }
 } 
+
+const author = mongoose.model('Authors',AuthorSchema);
+module.exports = {author}
