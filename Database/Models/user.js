@@ -8,18 +8,20 @@ const UserSchema = mongoose.Schema ({
             type: String,
             required: true,
             trim: true,
+            unique: true,
         }, 
         password:
         {
             type: String,
             required: true,
-            trim: true
+            trim: true,
         },
         email:
         {
             type:String,
             required: true,
-            trim:true
+            trim:true,
+            unique: true,
         },
         birthday:
         {
@@ -30,7 +32,7 @@ const UserSchema = mongoose.Schema ({
             bookId:{
                 type: mongoose.Types.ObjectId,
                 required: false,
-            }
+         }
         }]
     
 })

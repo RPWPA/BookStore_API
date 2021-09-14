@@ -19,15 +19,19 @@ app.post('/register', async (req,res) => {
         "favoriteBooks" : req.body.favoriteBooks,
     }
 
-    console.log(newUser)
     var user = new users(newUser);
-
-    await user.save().then((response) => {
+    user.save().then((response) => {
+        console.log(response)
         if(!response){
+            console.log(response)
             res.status(400).send();
+        }
+        else{
+            console.log(response)
         }
         res.status(200).send(response)
     }).catch(error => {
+        console.log(error)
         res.status(400).send(error)
     })
 
@@ -41,7 +45,6 @@ app.post('/login', async (req,res) => {
     // Getting the user
     const currentUser = await users.findOne({userName})
 
-    console.log(currentUser)
     // Checking for Validity
     if(currentUser == null)
     {
