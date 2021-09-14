@@ -2,6 +2,7 @@ const app = require('express').Router()
 const users = require('../Database/Models/user')
 const bcrypt = require('bcrypt')
 const saltRounds = 10;
+const jwt = require('jsonwebtoken')
 
 app.get('/allusers', async (req,res) => {
     const allUsers = await users.find()
@@ -39,6 +40,19 @@ app.post('/register', async (req,res) => {
 
 
 app.post('/login', async (req,res) => {
+
+    const authorization = req.header.authorization;
+    if(authorization != null || authorization != undefined)
+    {
+        console.log(authorization)
+        const requestToken = authorization.split(',')[0]
+        const user = users.findOne({requestToken})
+        if(user != null || user != undefined)
+        {
+            console.log(user + "asfdasfasfasfas")
+            res.status(200).send(user);
+        }
+    }
     const userName = req.body.userName
     const password = req.body.password
 
@@ -54,9 +68,17 @@ app.post('/login', async (req,res) => {
     
     // Checking if the password matches
     const hash = currentUser.password
-        bcrypt.compare(password,hash).then(result => {
-            // Tenary expression to check the validity of the password in comparison to the username. 
-            result == true? res.status(200).send(currentUser) : res.status(406).send("Username or password are incorrect")
+    bcrypt.compare(password,hash).then(result => {
+        // Tenary expression to check the validity of the password in comparison to the username. 
+        if(result)
+        { 
+            currentUser.generateToken();
+            res.status(200).send(currentUser);
+        } 
+        else 
+        {
+            res.status(406).send("Username or password are incorrect")
+        }
     })
     .catch(error => {
         console.log(error)

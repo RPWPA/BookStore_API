@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-
+const jwt = require('jsonwebtoken')
 
 const UserSchema = mongoose.Schema ({
     
@@ -26,7 +26,12 @@ const UserSchema = mongoose.Schema ({
         birthday:
         {
             type: String,
-            require: true,
+            required: true,
+        },
+        token:
+        {
+            type: String,
+            required: true
         },
         favoriteBooks:[{
             bookId:{
@@ -36,6 +41,12 @@ const UserSchema = mongoose.Schema ({
         }]
     
 })
+
+UserSchema.methods.generateToken = function()
+{
+    if(this.token == null || this.token == undefined)
+        this.token = jwt.sign(this._id);
+}
 
 const user  = mongoose.model('Users',UserSchema);
 module.exports = user
