@@ -1,14 +1,13 @@
-const express = require('express')
-const books = require('../books')
+const express = require('express');
+const { db } = require('../Database/Database');
+const books = require('../Database/Models/book')
 const app = express.Router();
 
-app.get('/allBooks', (req,res) => {
-    res.json(books)
+app.get('/allbooks', (req,res) => {
+    console.log(req)
+    const allBooks = books.find()
+    console.log(allBooks);
+    res.json(allBooks)
 })
-
-app.get('/asdsa', (req,res) => {
-    res.json(books)
-})
-
 
 module.exports = app
