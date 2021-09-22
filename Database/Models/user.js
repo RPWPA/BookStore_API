@@ -45,7 +45,7 @@ const UserSchema = mongoose.Schema ({
 UserSchema.methods.generateToken = function()
 {
     if(this.token == null || this.token == undefined)
-        this.token = jwt.sign({id:this._id},'sallty');
+        this.token = jwt.sign({id:this._id},'sallty', {expiresIn: '31d'});
 }
 
 const user  = mongoose.model('Users',UserSchema);
