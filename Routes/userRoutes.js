@@ -41,21 +41,23 @@ app.post('/register', async (req,res) => {
 
 app.post('/login', async (req,res) => {
 
+    // Checking for the token
     const authorization = req.header.authorization;
-    if(authorization != null || authorization != undefined)
+    if(authorization != undefined)
     {
-        console.log(authorization)
-        const requestToken = authorization.split(',')[0]
-        const user = users.findOne({requestToken})
+        const requestToken = authorization.token
+        const user = await users.findOne({requestToken})
         if(user != null || user != undefined)
         {
             console.log(user + "asfdasfasfasfas")
             res.status(200).send(user);
         }
     }
+    
     const userName = req.body.userName
     const password = req.body.password
 
+    
     // Getting the user
     const currentUser = await users.findOne({userName})
 
@@ -68,6 +70,7 @@ app.post('/login', async (req,res) => {
     
     // Checking if the password matches
     const hash = currentUser.password
+
     bcrypt.compare(password,hash).then(result => {
         // Tenary expression to check the validity of the password in comparison to the username. 
         if(result)
