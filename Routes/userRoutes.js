@@ -40,17 +40,16 @@ app.post('/register', async (req,res) => {
 
 
 app.post('/login', async (req,res) => {
-
     // Checking for the token
-    const authorization = req.header.authorization;
-    if(authorization != undefined)
+    const authorization = req.headers;
+    if(authorization !== "undefined")
     {
         const requestToken = authorization.token
         const user = await users.findOne({requestToken})
         if(user != null || user != undefined)
         {
-            console.log(user + "asfdasfasfasfas")
             res.status(200).send(user);
+            return;
         }
     }
     
