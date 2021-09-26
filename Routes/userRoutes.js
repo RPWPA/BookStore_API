@@ -10,6 +10,7 @@ app.get('/allusers', async (req,res) => {
     res.json(allUsers)
 })
 
+// Registeration Function
 app.post('/register', async (req,res) => {
     const newPass = await bcrypt.hash(req.body.password,saltRounds).then(newPass => newPass)
     let newUser = {
@@ -37,14 +38,13 @@ app.post('/register', async (req,res) => {
     })
 
 })
-
-
+// Login Function
 app.post('/login', async (req,res) => {
     // Checking for the token
-    const authorization = req.headers;
-    if(authorization !== "undefined")
+    const authorization = req.headers.authorization;
+    if(authorization !== undefined)
     {
-        const requestToken = authorization.token
+        const requestToken = authorization
         const user = await users.findOne({requestToken})
         if(user != null || user != undefined)
         {
@@ -56,7 +56,6 @@ app.post('/login', async (req,res) => {
     const userName = req.body.userName
     const password = req.body.password
 
-    
     // Getting the user
     const currentUser = await users.findOne({userName})
 
