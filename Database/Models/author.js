@@ -8,9 +8,9 @@ const AuthorSchema = mongoose.Schema  ({
             trim: true,
             unique: true,
         },
-        age:{
-            type:Number,
-            required: false
+        birthday:{
+            type:String,
+            required: true
         }
     
 })

@@ -1,6 +1,6 @@
 const express = require('express');
+const multer = require('multer')
 const fs = require('fs');
-const { db } = require('../Database/Database');
 const books = require('../Database/Models/book');
 const app = express.Router();
 
@@ -29,7 +29,7 @@ app.post('/addBook', async (req,res) => {
         fs.mkdirSync(folderName);
     }
     
-    
+
     
     
 })

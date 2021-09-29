@@ -45,7 +45,7 @@ app.post('/login', async (req,res) => {
     if(authorization !== undefined)
     {
         const requestToken = authorization
-        const user = await users.findOne({requestToken})
+        const user = await users.findOne(requestToken)
         if(user != null || user != undefined)
         {
             res.status(200).send(user);
@@ -57,7 +57,7 @@ app.post('/login', async (req,res) => {
     const password = req.body.password
 
     // Getting the user
-    const currentUser = await users.findOne({userName})
+    const currentUser = await users.findOne(userName)
 
     // Checking for Validity
     if(currentUser == null)
