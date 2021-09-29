@@ -15,6 +15,10 @@ const BookSchema = mongoose.Schema  ({
             type: mongoose.Types.ObjectId, 
             required: true
         },
+        userId:{
+            type: mongoose.Types.ObjectId, 
+            required: true
+        },
         price: {
             type:Number,
             required: true
