@@ -2,13 +2,13 @@ const mongoose = require('mongoose')
 
 const BookSchema = mongoose.Schema  ({
    
-        name:{
+        title:{
             type: String,
             required: true,
             trim: true
         },
         publishDate:{
-            type: Date,
+            type: String,
             required: true
         },
         authorId:{
@@ -24,7 +24,7 @@ const BookSchema = mongoose.Schema  ({
             required: true
         },
         imagePath: {
-            type:Number,
+            type:String,
             required: true
         },
         

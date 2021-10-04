@@ -18,6 +18,7 @@ app.use(express.json())
 
 app.use('/users',userRoutes)
 app.use('/authors',authorRoutes)
+app.use('/books',bookRoutes)
 
 app.listen(port, () => {
     console.log(`Listening on port ${port}`)

@@ -14,7 +14,6 @@ app.get('/getAllAuthors', (req,res) => {
 })
 
 app.post('/getAuthorById', async (req,res) => {
-    console.log(req.body.authorId)
     await authors.findById(req.body.authorId).exec()
     .then(result => {
         if(!result)
@@ -30,7 +29,6 @@ app.post('/getAuthorById', async (req,res) => {
 })
 
 app.post('/addAuthor', (req,res) => {
-    console.log(req.body)
     const author = new authors({...req.body})
     author.save().then(result => {
         res.status(200).send(result)
