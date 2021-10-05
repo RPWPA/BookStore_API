@@ -42,6 +42,7 @@ const UserSchema = mongoose.Schema ({
     
 })
 
+// This is used with objects of the model
 UserSchema.methods.generateToken = async function()
 {
     if(this.token == null || this.token == undefined)
@@ -49,6 +50,12 @@ UserSchema.methods.generateToken = async function()
         this.token = await jwt.sign({id:this._id},'sallty', {expiresIn: '31d'});
         await this.save();
     }
+}
+
+// This is used with models
+UserSchema.statics.verifyToken = function(token) 
+{
+    return jwt.verify(token, "sallty");
 }
 
 const user  = mongoose.model('Users',UserSchema);
