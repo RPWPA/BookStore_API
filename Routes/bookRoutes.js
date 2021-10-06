@@ -10,7 +10,6 @@ const books = require('../Database/Models/book');
 // Authorization Middlewares
 const isAuthorized = require('../Middlewares/authorization.middleware');
 const authorCheck = require('../Middlewares/authorCheck.middleware');
-const userCheck = require('../Middlewares/userCheck.middleware');
 
 // For handeling navigating through the server
 const path = require('path');
@@ -31,8 +30,7 @@ app.post('/addBook',isAuthorized, upload.single('image'), authorCheck, (req,res)
             imagePath: ''
     };
 
-    console.log("Asfasfasfas");
-    // Generating the folder of the user if it doesn't exist
+    // Generating the folder of the  user if it doesn't exist
     const folderName = path.join(__dirname , "../Users/" , newBook.userId);
     if(!fs.existsSync(folderName))
     {    

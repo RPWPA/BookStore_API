@@ -5,7 +5,7 @@ const isAuthorized = (req,res,next)  => {
     if(!req.headers.authorization)
     {
         res.status(401).send("unauthorized");
-
+        return;
     }
 
     let userId = user.verifyToken(req.headers.authorization);
