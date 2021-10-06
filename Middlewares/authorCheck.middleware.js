@@ -13,6 +13,12 @@ const authorCheck = (req,res,next) =>
             else if(!author)
             {
                 res.status(404).send("Author is not found");
+                console.log("asds");
+                return;
+            }
+            else
+            {
+                next()
             }
         })
     }
@@ -20,7 +26,6 @@ const authorCheck = (req,res,next) =>
     {
         res.status(404).send("Wrong id format");
     }
-    next();
 }
 
 module.exports = authorCheck

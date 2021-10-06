@@ -4,7 +4,8 @@ const isAuthorized = (req,res,next)  => {
     // If there is no token
     if(!req.headers.authorization)
     {
-        return res.status(401).send("unauthorized");
+        res.status(401).send("unauthorized");
+
     }
 
     let userId = user.verifyToken(req.headers.authorization);

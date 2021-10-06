@@ -20,7 +20,7 @@ app.get('/allbooks', (req,res) => {
     res.json(allBooks);
 })
 
-app.post('/addBook', upload.single('image'), isAuthorized, authorCheck,async (req,res) => {
+app.post('/addBook',isAuthorized, upload.single('image'), authorCheck, (req,res) => {
     let newBook = {
             token: req.headers.authorization,
             title: req.body.title,
@@ -31,6 +31,7 @@ app.post('/addBook', upload.single('image'), isAuthorized, authorCheck,async (re
             imagePath: ''
     };
 
+    console.log("Asfasfasfas");
     // Generating the folder of the user if it doesn't exist
     const folderName = path.join(__dirname , "../Users/" , newBook.userId);
     if(!fs.existsSync(folderName))
@@ -51,6 +52,7 @@ app.post('/addBook', upload.single('image'), isAuthorized, authorCheck,async (re
         {
             const book = new books({...newBook});
             book.save().then(result => {
+                console.log("here");
                 return res.status(200).send(result);
             })
             .catch(err => {
