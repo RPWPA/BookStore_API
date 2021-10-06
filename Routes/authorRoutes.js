@@ -62,7 +62,7 @@ app.post('/updateAuthor', isAuthorized, authorCheck,(req,res) => {
         return;
     }
     
-    authors.updateOne({_id : req.body.authorId}, { $setname: req.body.name, birthday: req.body.birthday}).then(result => {
+    authors.updateOne({_id : req.body.authorId}, { name: req.body.name, birthday: req.body.birthday}).then(result => {
         res.status(200).send(result)
     })
     .catch(err => {
