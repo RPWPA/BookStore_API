@@ -1,5 +1,5 @@
 // Checking if the author exists
-
+const mongoose = require('mongoose');
 const authors = require('../Database/Models/author');
 const authorCheck = (req,res,next) => 
 {
@@ -8,18 +8,17 @@ const authorCheck = (req,res,next) =>
         authors.findById(req.body.authorId,(err, author) => {
             if(err)
             {
-                return res.sendStatus(400);
-                
+                res.sendStatus(400);
             }
             else if(!author)
             {
-                return res.status(404).send("Author is not found");
+                res.status(404).send("Author is not found");
             }
         })
     }
     else
     {
-        return res.status(404).send("Wrong id format");
+        res.status(404).send("Wrong id format");
     }
     next();
 }

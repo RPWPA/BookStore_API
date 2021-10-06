@@ -20,7 +20,7 @@ app.get('/allbooks', (req,res) => {
     res.json(allBooks);
 })
 
-app.post('/addBook',isAuthorized, userCheck, authorCheck,upload.single('image'),async (req,res) => {
+app.post('/addBook', upload.single('image'), isAuthorized, authorCheck,async (req,res) => {
     let newBook = {
             token: req.headers.authorization,
             title: req.body.title,
