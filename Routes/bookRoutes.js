@@ -39,7 +39,6 @@ app.post('/addBook',isAuthorized, upload.single('image'), authorCheck, async (re
             imagePath: ''
     };
 
-
     // Generating the path for the image
     newBook.imagePath = await generateFolder(newBook.userId, req.file.originalname);
     // Saving the image inside of it's user's folder
@@ -62,7 +61,6 @@ app.get("/getBook", bookCheck, (req,res) => {
 app.put("/updateBook", isAuthorized, upload.single('image'), bookCheck, (req,res) => {
     
     checkIncomingBookData(req,res)
-
     books.findById(req.body.bookId, (err) => {
         if(err)
         {    
@@ -111,33 +109,34 @@ const generateFolder = (userId, fileName) => {
 }
 
 const checkIncomingBookData = (req,res) => {
+    // Must be cleaned!
     if(req.body.title === "" || req.body.title === undefined)
     {
-        res.status(400).send("title was not found")
+        res.status(400).send("title is not found")
         return;
     }
 
     if(req.body.publishDate === "" || req.body.publishDate === undefined)
     {
-        res.status(400).send("publishDate was not found")
+        res.status(400).send("publishDate is not found")
         return;
     }
 
     if(req.body.authorId === "" || req.body.authorId === undefined)
     {
-        res.status(400).send("authorId was not found")
+        res.status(400).send("authorId is not found")
         return;
     }
 
     if(req.body.price === "" || req.body.price === undefined)
     {
-        res.status(400).send("price was not found")
+        res.status(400).send("price is not found")
         return;
     }
 
     if(req.file.originalname === "" || req.file.originalname === undefined)
     {
-        res.status(400).send("image was not found")
+        res.status(400).send("image is not found")
         return;
     }
 }

@@ -4,6 +4,12 @@ const bcrypt = require('bcrypt')
 const saltRounds = 10;
 const jwt = require('jsonwebtoken')
 
+// Middlewares
+const userCheck = require('../Middlewares/userCheck.middleware');
+const isAuthorized = require('../Middlewares/authorization.middleware');
+
+
+// Return all users
 app.get('/allusers', async (req,res) => {
     const allUsers = await users.find()
     console.log(allUsers)
@@ -38,6 +44,7 @@ app.post('/register', async (req,res) => {
     })
 
 })
+
 // Login Function
 app.post('/login', async (req,res) => {
     // Checking for the token
@@ -87,5 +94,23 @@ app.post('/login', async (req,res) => {
     })
 })
 
+app.put('/updateUser', isAuthorized, userCheck, async (req,res) => {
+    if(req.body.birthday === "" || req.body.birthday === undefined)
+    {
+        res.status(400).send("birthday is not found")
+        return
+    }
+    else if(req.body.email === ""  || req.body.email === undefined  )
+    {
+        res.status(400).send("email is not found")
+        return
+    }
+    users.updateOne({_id : req.body.userId}, { email: req.body.email, birthday: req.body.birthday}).then(result => {
+        res.status(200).send(result)
+    })
+    .catch(err => {
+        res.status(404).send("User is not found")
+    })
+})
 
 module.exports = app
