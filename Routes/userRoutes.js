@@ -18,6 +18,9 @@ app.get('/allusers', async (req,res) => {
 
 // Registeration Function
 app.post('/register', async (req,res) => {
+
+    await checkIncomingPassword();
+
     const newPass = await bcrypt.hash(req.body.password,saltRounds).then(newPass => newPass)
     let newUser = {
         "userName" : req.body.userName,
@@ -112,5 +115,28 @@ app.put('/updateUser', isAuthorized, userCheck, async (req,res) => {
         res.status(404).send("User is not found")
     })
 })
+
+app.put('/changePassword', isAuthorized, userCheck, async(req,res) => {
+    await checkIncomingPassword(req,res)
+    const newPass = await bcrypt.hash(req.body.password,saltRounds).then(newPass => newPass)
+    users.updateOne({_id : req.body.userId}, { password: newPass}).then(result => {
+        res.status(200).send(result)
+    })
+    .catch(err => {
+        res.status(404).send(err)
+    })
+})
+
+const checkIncomingPassword = (req,res) => {
+    if(req.body.password === "" || req.body.password === undefined)
+    {
+        res.status(400).send("password was not found")
+        return;
+    }
+    if(req.body.password !== req.body.checkPassword) {
+        res.status(400).send("passwords don't match")
+        return;
+    }
+}
 
 module.exports = app
