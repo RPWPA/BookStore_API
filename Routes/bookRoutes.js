@@ -25,7 +25,10 @@ app.get('/allbooks', (req,res) => {
     }
 )
 
-app.post('/addBook',isAuthorized, upload.single('image'), authorCheck, (req,res) => {
+app.post('/addBook',isAuthorized, upload.single('image'), authorCheck, async (req,res) => {
+
+    checkIncomingBookData(req,res)
+
     let newBook = {
             token: req.headers.authorization,
             title: req.body.title,
@@ -36,34 +39,11 @@ app.post('/addBook',isAuthorized, upload.single('image'), authorCheck, (req,res)
             imagePath: ''
     };
 
-    // Generating the folder of the  user if it doesn't exist
-    const folderName = path.join(__dirname , "../Users/" , newBook.userId);
-    if(!fs.existsSync(folderName))
-    {    
-        fs.mkdirSync(folderName);
-    }
 
-    // Setting the image path and name
-    newBook.imagePath = path.join(folderName,"\\",req.file.originalname);
-
+    // Generating the path for the image
+    newBook.imagePath = await generateFolder(newBook.userId, req.file.originalname);
     // Saving the image inside of it's user's folder
-    fs.writeFile(newBook.imagePath, req.file.buffer,(err) => {
-        if(err)
-        {
-            return res.status(400).send("An error occured while saving the image");
-        }
-        else
-        {
-            const book = new books({...newBook});
-            book.save().then(result => {
-                console.log("here");
-                return res.status(200).send(result);
-            })
-            .catch(err => {
-                return res.status(400).send(err);
-            })
-        }
-    })
+    writeImage(newBook.imagePath,req.file.buffer, newBook,res);
 })
 
 app.get("/getBook", bookCheck, (req,res) => {
@@ -78,5 +58,88 @@ app.get("/getBook", bookCheck, (req,res) => {
         }
     }
 )})
+
+app.put("/updateBook", isAuthorized, upload.single('image'), bookCheck, (req,res) => {
+    
+    checkIncomingBookData(req,res)
+
+    books.findById(req.body.bookId, (err) => {
+        if(err)
+        {    
+            res.status(404).send(err)
+        }
+        else
+        {
+            books.updateOne({_id : req.body.bookId}, { title: req.body.title, publishDate: req.body.publishDate, authorId: req.body.authorId, price: req.body.price, imagePath: req.body.imagePath}).then(result => {
+                res.status(200).send(result)
+            })
+        }
+    })
+})
+
+const writeImage = (imagePath, buffer, newBook ,res) => {
+    // Saving the image inside of it's user's folder
+    fs.writeFile(imagePath, buffer,(err) => {
+        if(err)
+        {
+            return res.status(400).send("An error occured while saving the image");
+        }
+        else
+        {
+            const book = new books({...newBook});
+            book.save().then(result => {
+                return res.status(200).send(result);
+            })
+            .catch(err => {
+                return res.status(400).send(err);
+            })
+        }
+    })
+}
+
+const generateFolder = (userId, fileName) => {
+
+    // Generating the folder of the  user if it doesn't exist
+    const folderName = path.join(__dirname , "../Users/" , userId);
+    if(!fs.existsSync(folderName))
+    {    
+        fs.mkdirSync(folderName);
+    }
+    
+    // Setting the image path and name
+    return path.join(folderName,"\\",fileName);
+}
+
+const checkIncomingBookData = (req,res) => {
+    if(req.body.title === "" || req.body.title === undefined)
+    {
+        res.status(400).send("title was not found")
+        return;
+    }
+
+    if(req.body.publishDate === "" || req.body.publishDate === undefined)
+    {
+        res.status(400).send("publishDate was not found")
+        return;
+    }
+
+    if(req.body.authorId === "" || req.body.authorId === undefined)
+    {
+        res.status(400).send("authorId was not found")
+        return;
+    }
+
+    if(req.body.price === "" || req.body.price === undefined)
+    {
+        res.status(400).send("price was not found")
+        return;
+    }
+
+    if(req.file.originalname === "" || req.file.originalname === undefined)
+    {
+        res.status(400).send("image was not found")
+        return;
+    }
+}
 
 module.exports = app

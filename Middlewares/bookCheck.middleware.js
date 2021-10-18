@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const books = require('../Database/Models/book');
 const bookCheck = (req,res,next) => 
 {
+    console.log(req.body);
     if(req.body.bookId === undefined)
     {
         res.status(400).send("Didn't recieve bookId");
