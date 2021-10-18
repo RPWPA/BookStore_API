@@ -10,14 +10,20 @@ const books = require('../Database/Models/book');
 // Authorization Middlewares
 const isAuthorized = require('../Middlewares/authorization.middleware');
 const authorCheck = require('../Middlewares/authorCheck.middleware');
+const bookCheck = require('../Middlewares/bookCheck.middleware');
 
 // For handeling navigating through the server
 const path = require('path');
 
 app.get('/allbooks', (req,res) => {
-    const allBooks = books.find();
-    res.json(allBooks);
-})
+    books.find().then((allBooks) => {
+        res.json(allBooks)
+    })
+    .catch((err) => {
+        res.status(404).send(err)
+    })
+    }
+)
 
 app.post('/addBook',isAuthorized, upload.single('image'), authorCheck, (req,res) => {
     let newBook = {
@@ -59,5 +65,18 @@ app.post('/addBook',isAuthorized, upload.single('image'), authorCheck, (req,res)
         }
     })
 })
+
+app.get("/getBook", bookCheck, (req,res) => {
+    books.findById(req.body.bookId, (err,book) => {
+        if(err)
+        {    
+            res.status(404).send(err)
+        }
+        else
+        {
+            res.send(book)
+        }
+    }
+)})
 
 module.exports = app

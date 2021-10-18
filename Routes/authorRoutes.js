@@ -15,7 +15,7 @@ app.get('/getAllAuthors', (req,res) => {
     })
 })
 
-app.post('/getAuthorById', (req,res) => {
+app.post('/getAuthorById', (req,res) => { 
     authors.findById(req.body.authorId).exec()
     .then(result => {
         if(!result)
