@@ -10,7 +10,7 @@ const isAuthorized = require('../Middlewares/authorization.middleware');
 
 
 // Return all users
-app.get('/allusers', async (req,res) => {
+app.get('/getAllUsers', async (req,res) => {
     const allUsers = await users.find()
     res.json(allUsers)
 })
@@ -18,7 +18,7 @@ app.get('/allusers', async (req,res) => {
 // Registeration Function
 app.post('/register', async (req,res) => {
 
-    await checkIncomingPassword();
+    await checkIncomingPassword(req,res);
 
     const newPass = await bcrypt.hash(req.body.password,saltRounds).then(newPass => newPass)
     let newUser = {
@@ -151,7 +151,7 @@ const checkIncomingPassword = (req,res) => {
         res.status(400).send("password was not found")
         return;
     }
-    if(req.body.password !== req.body.checkPassword) {
+    if(req.body.checkPassword !== req.body.checkPassword) {
         res.status(400).send("passwords don't match")
         return;
     }

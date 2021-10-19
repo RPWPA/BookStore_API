@@ -7,6 +7,7 @@ let upload = multer();
 
 // Models
 const books = require('../Database/Models/book');
+const users = require('../Database/Models/user');
 // Authorization Middlewares
 const isAuthorized = require('../Middlewares/authorization.middleware');
 const authorCheck = require('../Middlewares/authorCheck.middleware');
@@ -14,6 +15,8 @@ const bookCheck = require('../Middlewares/bookCheck.middleware');
 
 // For handeling navigating through the server
 const path = require('path');
+const userCheck = require('../Middlewares/userCheck.middleware');
+const user = require('../Database/Models/user');
 
 app.get('/allbooks', (req,res) => {
     books.find().then((allBooks) => {
@@ -75,6 +78,17 @@ app.put("/updateBook", isAuthorized, upload.single('image'), bookCheck, (req,res
     })
 })
 
+app.post("/addToFavorites", isAuthorized, bookCheck, userCheck, (req,res) => {
+    let favoriteBooks = []
+    user.find(req.body.userId,(user) => {
+        (favoriteBooks) = user
+    })
+    favoriteBooks.push(req.body.bookId)
+    console.log(favoriteBooks);
+    user.findByIdAndUpdate(req.body.userId, {favoriteBooks:  favoriteBooks.values()}).then((user) => {
+        console.log(user);
+    })
+})
 const writeImage = (imagePath, buffer, newBook ,res) => {
     // Saving the image inside of it's user's folder
     fs.writeFile(imagePath, buffer,(err) => {
