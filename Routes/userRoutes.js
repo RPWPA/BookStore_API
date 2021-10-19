@@ -97,6 +97,7 @@ app.post('/login', async (req,res) => {
     })
 })
 
+// Updating User
 app.put('/updateUser', isAuthorized, userCheck, async (req,res) => {
     if(req.body.birthday === "" || req.body.birthday === undefined)
     {
@@ -116,6 +117,23 @@ app.put('/updateUser', isAuthorized, userCheck, async (req,res) => {
     })
 })
 
+// Deleting User
+app.put('/deleteUser', isAuthorized, userCheck, async(req,res) => {
+    users.findOneAndDelete(req.body.userId, (err, user) => {
+        if(err)
+        {
+            res.status(404).send("User is not found")
+            return;
+        }
+        else
+        {
+            res.status(200).send(user)
+            return;
+        }
+    })
+})
+
+// Changing Password
 app.put('/changePassword', isAuthorized, userCheck, async(req,res) => {
     await checkIncomingPassword(req,res)
     const newPass = await bcrypt.hash(req.body.password,saltRounds).then(newPass => newPass)
@@ -127,6 +145,7 @@ app.put('/changePassword', isAuthorized, userCheck, async(req,res) => {
     })
 })
 
+// Checking value of the incoming passwords
 const checkIncomingPassword = (req,res) => {
     if(req.body.password === "" || req.body.password === undefined)
     {
