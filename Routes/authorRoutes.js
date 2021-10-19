@@ -30,7 +30,7 @@ app.post('/getAuthorById', (req,res) => {
     })
 })
 
-app.post('/addAuthor', isAuthorized,(req,res) => {
+app.post('/addAuthor', isAuthorized, (req,res) => {
     if(!req.body.name)
     {
         res.status(400).end("name is required");
@@ -50,7 +50,37 @@ app.post('/addAuthor', isAuthorized,(req,res) => {
     })
 })
 
+app.delete('/deleteAuthor', isAuthorized, authorCheck,(req,res) => {
+
+    authors.findOneAndDelete(req.body.authorId,(err,author) =>
+    {
+        if(err)
+        {
+            res.status(404).send("Author is not found");
+            return;
+        }
+        else
+        {
+            res.status(200).send(author);
+            return;
+        }
+    })
+    
+})
+
 app.post('/updateAuthor', isAuthorized, authorCheck,(req,res) => {
+    
+    checkInfo(req,res)
+    
+    authors.updateOne({_id : req.body.authorId}, { name: req.body.name, birthday: req.body.birthday}).then(result => {
+        res.status(200).send(result)
+    })
+    .catch(err => {
+        res.status(404).send("Author is not found")
+    })
+})
+
+const checkInfo = (req,res) => {
     if(!req.body.name)
     {
         res.status(400).end("name is required");
@@ -61,13 +91,6 @@ app.post('/updateAuthor', isAuthorized, authorCheck,(req,res) => {
         res.status(400).end("birthday is required");
         return;
     }
-    
-    authors.updateOne({_id : req.body.authorId}, { name: req.body.name, birthday: req.body.birthday}).then(result => {
-        res.status(200).send(result)
-    })
-    .catch(err => {
-        res.status(404).send("Author is not found")
-    })
-})
+}
 
 module.exports = app

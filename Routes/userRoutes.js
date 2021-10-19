@@ -12,7 +12,6 @@ const isAuthorized = require('../Middlewares/authorization.middleware');
 // Return all users
 app.get('/allusers', async (req,res) => {
     const allUsers = await users.find()
-    console.log(allUsers)
     res.json(allUsers)
 })
 
@@ -118,7 +117,7 @@ app.put('/updateUser', isAuthorized, userCheck, async (req,res) => {
 })
 
 // Deleting User
-app.put('/deleteUser', isAuthorized, userCheck, async(req,res) => {
+app.delete('/deleteUser', isAuthorized, userCheck, async(req,res) => {
     users.findOneAndDelete(req.body.userId, (err, user) => {
         if(err)
         {
