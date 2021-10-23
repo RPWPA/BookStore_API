@@ -34,10 +34,8 @@ const UserSchema = mongoose.Schema ({
             required: false
         },
         favoriteBooks:[{
-            bookId:{
-                type: mongoose.Types.ObjectId,
+               type: mongoose.Types.ObjectId,
                 required: false,
-         }
         }]
     
 })

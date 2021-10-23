@@ -16,9 +16,8 @@ const bookCheck = require('../Middlewares/bookCheck.middleware');
 // For handeling navigating through the server
 const path = require('path');
 const userCheck = require('../Middlewares/userCheck.middleware');
-const user = require('../Database/Models/user');
 
-app.get('/allbooks', (req,res) => {
+app.get('/getAllBooks', (req,res) => {
     books.find().then((allBooks) => {
         res.json(allBooks)
     })
@@ -78,16 +77,25 @@ app.put("/updateBook", isAuthorized, upload.single('image'), bookCheck, (req,res
     })
 })
 
-app.post("/addToFavorites", isAuthorized, bookCheck, userCheck, (req,res) => {
+app.post("/addToFavorites", isAuthorized, bookCheck, userCheck,async (req,res) => {
     let favoriteBooks = []
-    user.find(req.body.userId,(user) => {
-        (favoriteBooks) = user
+    users.findOne({_id:req.body.userId}).then(user => {
+        favoriteBooks = user.favoriteBooks
+        favoriteBooks.push(req.body.bookId)
+        users.findByIdAndUpdate(req.body.userId, {favoriteBooks},{new:true},(err, user) => {
+            if(err)
+            {
+                res.status(404).send(err)
+            }
+            else
+            {
+                res.status(200).send(user)
+            }
+        })
     })
-    favoriteBooks.push(req.body.bookId)
-    console.log(favoriteBooks);
-    user.findByIdAndUpdate(req.body.userId, {favoriteBooks:  favoriteBooks.values()}).then((user) => {
-        console.log(user);
-    })
+     
+    
+    
 })
 const writeImage = (imagePath, buffer, newBook ,res) => {
     // Saving the image inside of it's user's folder
