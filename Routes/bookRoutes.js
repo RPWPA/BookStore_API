@@ -77,11 +77,56 @@ app.put("/updateBook", isAuthorized, upload.single('image'), bookCheck, (req,res
     })
 })
 
+/* #region Different way to implement addToFavorites */
+/*app.post("/addToFavorites", isAuthorized, bookCheck, userCheck,async (req,res) => {
+    
+    var find = [];
+    var tmp =users.findOne({_id:req.body.userId});
+    find.push(tmp);
+
+    Promise.all(find).then(user=>{
+        add(user[0], req).then(arr=>{
+            users.findByIdAndUpdate(req.body.userId, {$set:{favoriteBooks:  arr}},{new:true},(err, user) => {
+                if(err)
+                {
+                    res.status(404).send(err)
+                }
+                else
+                {
+                    console.log(user.favoriteBooks);
+                    res.status(200).send(user)
+                }
+            })
+        }).catch(err=>{
+            console.log(err);
+        })
+    })
+})
+
+var add = (user, req)=>{
+    return new Promise((resolve,reject)=>{
+        let favoriteBooks = [];
+        favoriteBooks = user.favoriteBooks
+        console.log(favoriteBooks);
+        let s = favoriteBooks.length;
+        favoriteBooks = [...favoriteBooks, req.body.bookId]
+        console.log(favoriteBooks);
+        if(favoriteBooks.length === s)
+            reject("not same size");
+        else
+            resolve(favoriteBooks);
+
+    });
+} 
+ */
+/* #endregion */
+
 app.post("/addToFavorites", isAuthorized, bookCheck, userCheck,async (req,res) => {
     let favoriteBooks = []
     users.findOne({_id:req.body.userId}).then(user => {
         favoriteBooks = user.favoriteBooks
-        favoriteBooks.push(req.body.bookId)
+        if(!favoriteBooks.includes(req.body.bookId))
+            favoriteBooks.push(req.body.bookId)
         users.findByIdAndUpdate(req.body.userId, {favoriteBooks},{new:true},(err, user) => {
             if(err)
             {
