@@ -121,6 +121,7 @@ var add = (user, req)=>{
  */
 /* #endregion */
 
+// Add To Favorite Functionality
 app.post("/addToFavorites", isAuthorized, bookCheck, userCheck,async (req,res) => {
     let favoriteBooks = []
     users.findOne({_id:req.body.userId}).then(user => {
@@ -138,10 +139,30 @@ app.post("/addToFavorites", isAuthorized, bookCheck, userCheck,async (req,res) =
             }
         })
     })
-     
-    
-    
 })
+
+// Remove From Favorite Functionality
+app.post("/removeFromFavorites", isAuthorized, bookCheck, userCheck,async (req,res) => {
+    let favoriteBooks = []
+    users.findOne({_id:req.body.userId}).then(user => {
+        favoriteBooks = user.favoriteBooks
+        if(favoriteBooks.includes(req.body.bookId))
+        {
+            favoriteBooks = favoriteBooks.filter(x => x.toString() !== req.body.bookId)
+        }
+        users.findByIdAndUpdate(req.body.userId, {favoriteBooks},{new:true},(err, user) => {
+            if(err)
+            {
+                res.status(404).send(err)
+            }
+            else
+            {
+                res.status(200).send(user)
+            }
+        })
+    })
+})
+
 const writeImage = (imagePath, buffer, newBook ,res) => {
     // Saving the image inside of it's user's folder
     fs.writeFile(imagePath, buffer,(err) => {
@@ -209,3 +230,4 @@ const checkIncomingBookData = (req,res) => {
 }
 
 module.exports = app
+
