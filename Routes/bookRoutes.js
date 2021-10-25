@@ -127,17 +127,22 @@ app.post("/addToFavorites", isAuthorized, bookCheck, userCheck,async (req,res) =
     users.findOne({_id:req.body.userId}).then(user => {
         favoriteBooks = user.favoriteBooks
         if(!favoriteBooks.includes(req.body.bookId))
+        {
+            users.findByIdAndUpdate(req.body.userId, {favoriteBooks},{new:true},(err, user) => {
+                if(err)
+                {
+                    res.status(404).send(err)
+                }
+                else
+                {
+                    res.status(200).send(user)
+                }
+            })
             favoriteBooks.push(req.body.bookId)
-        users.findByIdAndUpdate(req.body.userId, {favoriteBooks},{new:true},(err, user) => {
-            if(err)
-            {
-                res.status(404).send(err)
-            }
-            else
-            {
-                res.status(200).send(user)
-            }
-        })
+        }
+        else{
+            res.status(400).send("The book is already favorited")
+        }
     })
 })
 
@@ -149,17 +154,21 @@ app.post("/removeFromFavorites", isAuthorized, bookCheck, userCheck,async (req,r
         if(favoriteBooks.includes(req.body.bookId))
         {
             favoriteBooks = favoriteBooks.filter(x => x.toString() !== req.body.bookId)
+            users.findByIdAndUpdate(req.body.userId, {favoriteBooks},{new:true},(err, user) => {
+                if(err)
+                {
+                    res.status(404).send(err)
+                }
+                else
+                {
+                    res.status(200).send(user)
+                }
+            })
         }
-        users.findByIdAndUpdate(req.body.userId, {favoriteBooks},{new:true},(err, user) => {
-            if(err)
-            {
-                res.status(404).send(err)
-            }
-            else
-            {
-                res.status(200).send(user)
-            }
-        })
+        else
+        {
+            res.status(400).send("Book is not favorited in the first place.")
+        }
     })
 })
 
@@ -172,14 +181,18 @@ const writeImage = (imagePath, buffer, newBook ,res) => {
         }
         else
         {
-            const book = new books({...newBook});
-            book.save().then(result => {
-                return res.status(200).send(result);
-            })
-            .catch(err => {
-                return res.status(400).send(err);
-            })
+           saveBook(newBook) 
         }
+    })
+}
+
+const saveBook = (newBook) => {
+    const book = new books({...newBook});
+    book.save().then(result => {
+        return res.status(200).send(result);
+    })
+    .catch(err => {
+        return res.status(400).send(err);
     })
 }
 
