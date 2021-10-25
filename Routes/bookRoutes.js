@@ -185,8 +185,15 @@ const writeImage = (imagePath, buffer, newBook ,res) => {
 
 const generateFolder = (userId, fileName) => {
 
+    // Generating the Users folder if it doesn't exist
+    let folderName = path.join(__dirname , "../Users");
+    if(!fs.existsSync(folderName))
+    {    
+        fs.mkdirSync(folderName);
+    }
+
     // Generating the folder of the  user if it doesn't exist
-    const folderName = path.join(__dirname , "../Users/" , userId);
+    folderName = path.join(__dirname , "../Users/" , userId);
     if(!fs.existsSync(folderName))
     {    
         fs.mkdirSync(folderName);
